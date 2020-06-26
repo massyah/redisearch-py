@@ -54,8 +54,8 @@ res = client.search("search engine")
 # Searching with snippets
 res = client.search("search engine", snippet_sizes = {'body': 50})
 
-# Searching with complext parameters:
-q = Query("search engine").verbatim().no_content().with_scores().paging(0,5)
+# Searching with complex parameters:
+q = Query("search engine").verbatim().no_content().with_scores().paging(0,5).scorer("TFIDF.DOCNORM")
 res = client.search(q)
 
 
