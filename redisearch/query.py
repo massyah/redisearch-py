@@ -24,6 +24,7 @@ class Query(object):
         self._verbatim = False
         self._with_payloads = False
         self._with_scores = False
+        self._scorer = None
         self._filters = list()
         self._ids = None
         self._slop = -1
@@ -113,10 +114,17 @@ class Query(object):
         """
         self._language = language
         return self
-
+    
+    def scorer(self, scorer):
+        """
+        Allow to specify one of the provided scorer : TFIDF, TFIDF.DOCNORM, BM25, DISMAX, DOSCORE, HAMMING
+        """
+        self._scorer = scorer
+        return self 
+    
     def slop(self, slop):
         """
-        Allow a masimum of N intervening non matched terms between phrase terms (0 means exact phrase)
+        Allow a maximum of N intervening non matched terms between phrase terms (0 means exact phrase)
         """
         self._slop = slop
         return self
@@ -185,7 +193,10 @@ class Query(object):
 
         if self._language:
             args += ['LANGUAGE', self._language]
-
+        
+        if self._scorer:
+            args += ['SCORER', self._scorer] 
+        
         args += self._summarize_fields + self._highlight_fields
         args += ["LIMIT", self._offset, self._num]
         return args
